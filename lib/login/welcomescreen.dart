@@ -148,7 +148,7 @@ class HomePage extends StatelessWidget {
                               ),
                               children: [
                                 const TextSpan(
-                                  text: "Login as administrator, ",
+                                  text: "Company login, ",
                                 ),
                                 TextSpan(
                                   text: "click here",

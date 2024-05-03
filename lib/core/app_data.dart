@@ -31,7 +31,7 @@ class AppData {
     Product(
       name: 'Keyboard',
       price: 380,
-      isAvailable: false,
+      isAvailable: true,
       off: null,
       quantity: 0,
       images: [
@@ -90,7 +90,7 @@ class AppData {
       type: ProductType.toys,
     ),
     Product(
-      name: 'brocken headset',
+      name: 'headset',
       price: 230,
       isAvailable: true,
       off: null,
@@ -180,7 +180,7 @@ class AppData {
       Color(0xFFEC6813),
     ),
     const BottomNavyBarItem(
-      "Favorite",
+      "FAVORITES",
       Icon(Icons.favorite),
       Color(0xFFEC6813),
     ),
@@ -190,13 +190,12 @@ class AppData {
       Color(0xFFEC6813),
     ),
     const BottomNavyBarItem(
-      "Cart",
+      "CART",
       Icon(Icons.shopping_cart),
       Color(0xFFEC6813),
     ),
-    // New bottom navigation bar item for "Coin"
     const BottomNavyBarItem(
-      "Profile",
+      "PROFILE",
       Icon(Icons.person),
       Color(0xFFEC6813),
     ),
@@ -205,11 +204,11 @@ class AppData {
   static List<RecommendedProduct> recommendedProducts = [
     RecommendedProduct(
       imagePath: "",
-      cardBackgroundColor: const Color(0xFFEC6813),
+      cardBackgroundColor: Color.fromARGB(154, 184, 33, 33),
     ),
     RecommendedProduct(
       imagePath: "",
-      cardBackgroundColor: const Color(0xFF3081E1),
+      cardBackgroundColor: Color.fromARGB(184, 11, 110, 191),
       buttonBackgroundColor: const Color(0xFF9C46FF),
       buttonTextColor: const Color.fromARGB(255, 92, 32, 32),
     ),

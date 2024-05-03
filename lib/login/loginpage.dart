@@ -206,7 +206,7 @@ class LoginPage extends StatelessWidget {
           },
         ),
         const SizedBox(
-          height: 30,
+          height: 20,
         ),
       ],
     );

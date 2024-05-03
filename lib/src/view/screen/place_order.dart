@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:erevive/src/view/screen/order_sucess.dart';
 
-class Placeorder extends StatelessWidget {
+class Placeorder extends StatefulWidget {
+  @override
+  _PlaceorderState createState() => _PlaceorderState();
+}
+
+class _PlaceorderState extends State<Placeorder> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController postalCodeController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+
+  bool submitted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +36,8 @@ class Placeorder extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Top order details
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
                       'Order Details',
                       style:
@@ -52,8 +59,8 @@ class Placeorder extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Text "Enter delivery details"
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
                     child: Text(
                       'Enter Delivery Details',
                       style:
@@ -61,49 +68,47 @@ class Placeorder extends StatelessWidget {
                     ),
                   ),
                   // Delivery details form
-                  TextField(
+                  buildTextField(
                     controller: descriptionController,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      labelText: 'State',
-                      border: OutlineInputBorder(),
-                    ),
+                    labelText: 'State',
+                    errorText: submitted && descriptionController.text.isEmpty
+                        ? 'This field is mandatory'
+                        : null,
                   ),
                   const SizedBox(height: 10),
-                  TextField(
+                  buildTextField(
                     controller: addressController,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      labelText: 'City/Town',
-                      border: OutlineInputBorder(),
-                    ),
+                    labelText: 'City/Town',
+                    errorText: submitted && addressController.text.isEmpty
+                        ? 'This field is mandatory'
+                        : null,
                   ),
                   const SizedBox(height: 10),
-                  TextField(
+                  buildTextField(
                     controller: cityController,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      labelText: 'Googlemap location link',
-                      border: OutlineInputBorder(),
-                    ),
+                    labelText: 'Googlemap location link',
+                    errorText: submitted && cityController.text.isEmpty
+                        ? 'This field is mandatory'
+                        : null,
                   ),
                   const SizedBox(height: 10),
-                  TextField(
+                  buildTextField(
                     controller: postalCodeController,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      labelText: 'Pin Code',
-                      border: OutlineInputBorder(),
-                    ),
+                    labelText: 'Pin Code',
+                    errorText: submitted && postalCodeController.text.isEmpty
+                        ? 'This field is mandatory'
+                        : null,
+                    keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 10),
-                  TextField(
+                  buildTextField(
                     controller: phoneNumberController,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      border: const OutlineInputBorder(),
-                    ),
+                    labelText: 'Phone Number',
+                    errorText: submitted && phoneNumberController.text.isEmpty
+                        ? 'This field is mandatory'
+                        : null,
+                    keyboardType:
+                        TextInputType.number, // Set keyboardType to number
                   ),
                   const SizedBox(height: 10),
                 ],
@@ -115,11 +120,19 @@ class Placeorder extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                setState(() {
+                  submitted = true;
+                });
+                if (descriptionController.text.isNotEmpty &&
+                    addressController.text.isNotEmpty &&
+                    cityController.text.isNotEmpty &&
+                    postalCodeController.text.isNotEmpty &&
+                    phoneNumberController.text.isNotEmpty) {
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            OrderSucess())); // Add functionality to place order button
+                    MaterialPageRoute(builder: (context) => OrderSucess()),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(18.0),
@@ -139,6 +152,24 @@ class Placeorder extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    String? errorText,
+    TextInputType? keyboardType,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: null,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(),
+        errorText: errorText,
+      ),
+      keyboardType: keyboardType,
     );
   }
 }

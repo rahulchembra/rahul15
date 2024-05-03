@@ -84,8 +84,8 @@ class CartScreen extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text(
                       controller.isPriceOff(product)
-                          ? "\$${product.off}"
-                          : "\$${product.price}",
+                          ? "${product.off}"
+                          : "${product.price}",
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 23,
@@ -159,7 +159,7 @@ class CartScreen extends StatelessWidget {
             () {
               return AnimatedSwitcherWrapper(
                 child: Text(
-                  "\$${controller.totalPrice.value}",
+                  "${controller.totalPrice.value}",
                   key: ValueKey<int>(controller.totalPrice.value),
                   style: const TextStyle(
                     fontSize: 25,

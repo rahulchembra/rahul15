@@ -74,6 +74,7 @@ class SignupPage extends StatelessWidget {
                       duration: const Duration(milliseconds: 1300),
                       child: makeInput(
                         label: "Phone Number",
+                        keyboardType: TextInputType.phone,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'This field is mandatory';
@@ -180,7 +181,8 @@ class SignupPage extends StatelessWidget {
   Widget makeInput(
       {label,
       obscureText = false,
-      required FormFieldValidator<String> validator}) {
+      required FormFieldValidator<String> validator,
+      TextInputType keyboardType = TextInputType.text}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -193,6 +195,7 @@ class SignupPage extends StatelessWidget {
           height: 5,
         ),
         TextFormField(
+          keyboardType: keyboardType, // Set keyboardType here
           obscureText: obscureText,
           decoration: InputDecoration(
             contentPadding:

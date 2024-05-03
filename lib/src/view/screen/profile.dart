@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erevive/src/view/screen/coin.dart';
 import 'package:erevive/login/loginpage.dart';
+import 'package:erevive/src/view/screen/coming_soon.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -99,7 +100,7 @@ class ProfilePage extends StatelessWidget {
                             color: Colors.black54,
                           ),
                           title: Text(
-                            'My Ecoins',
+                            'My E-coins',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -120,7 +121,8 @@ class ProfilePage extends StatelessWidget {
                         // Navigate to Purchase History page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const Coin()),
+                          MaterialPageRoute(
+                              builder: (context) => ComingSoonScreen()),
                         );
                       },
                       child: Card(
@@ -160,7 +162,8 @@ class ProfilePage extends StatelessWidget {
                         // Navigate to Help & Support page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const Coin()),
+                          MaterialPageRoute(
+                              builder: (context) => ComingSoonScreen()),
                         );
                       },
                       child: Card(
@@ -198,7 +201,7 @@ class ProfilePage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         // Navigate to Logout page
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => LoginPage()),
                         );

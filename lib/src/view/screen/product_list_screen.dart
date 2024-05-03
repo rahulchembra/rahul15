@@ -5,6 +5,7 @@ import 'package:erevive/core/app_color.dart';
 import 'package:erevive/src/controller/product_controller.dart';
 import 'package:erevive/src/view/widget/product_grid_view.dart';
 import 'package:erevive/src/view/widget/list_item_selector.dart';
+import 'package:erevive/src/view/screen/sell_screen.dart';
 
 enum AppbarActionType { leading, trailing }
 
@@ -57,7 +58,7 @@ class ProductListScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'BUY EWASTE',
+                            'SELL E-WASTE',
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall
@@ -65,7 +66,14 @@ class ProductListScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Sell(),
+                                ),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppData
                                   .recommendedProducts[index]
@@ -78,7 +86,7 @@ class ProductListScreen extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              "Get Now",
+                              "SELL",
                               style: TextStyle(
                                 color: AppData.recommendedProducts[index]
                                     .buttonTextColor!,
@@ -90,7 +98,7 @@ class ProductListScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Image.asset(
-                      'assets/online-shopping-order-delivery.png',
+                      'assets/ewaste.png',
                       height: 125,
                       fit: BoxFit.cover,
                     )
@@ -109,7 +117,7 @@ class ProductListScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Select the catogory of E waste",
+            "Select the category of E-waste",
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           TextButton(
@@ -151,11 +159,11 @@ class ProductListScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Hello costomer",
+                  "Hello Customer",
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
                 Text(
-                  "purchase your E waste here",
+                  "Purchase your E-waste here",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 _recommendedProductListView(context),

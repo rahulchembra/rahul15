@@ -8,7 +8,7 @@ class Coin extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "My Ecoins",
+          "My E-coins",
           style: Theme.of(context).textTheme.displayLarge,
         ),
       ),
@@ -18,7 +18,7 @@ class Coin extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const Text(
-              'Your ECoins',
+              'Your E-Coins',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -29,7 +29,7 @@ class Coin extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Total ECoins',
+                      'Total E-Coins',
                       style: TextStyle(fontSize: 18),
                     ),
                     Text(
@@ -51,8 +51,7 @@ class Coin extends StatelessWidget {
                         Colors.white), // Text color
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            18.0), // Set your desired border radius here
+                        borderRadius: BorderRadius.circular(18.0), //
                       ),
                     ),
                   ),
@@ -68,16 +67,16 @@ class Coin extends StatelessWidget {
             const SizedBox(height: 16),
             ListTile(
               leading: const Icon(Icons.shop),
-              title: const Text('Shop on E REVIVE app'),
-              subtitle: const Text('Earn ECoins for every order'),
+              title: const Text('Shop on Erevive app'),
+              subtitle: const Text('Earn E-Coins for every order'),
               onTap: () {
                 // Implement navigation to shop page
               },
             ),
             ListTile(
               leading: const Icon(Icons.feedback),
-              title: const Text('Rate & Review Products'),
-              subtitle: const Text('Earn ECoins per review'),
+              title: const Text('Sell on Erevive app'),
+              subtitle: const Text('Earn E-Coins for every sell'),
               onTap: () {
                 // Implement navigation to review page
               },

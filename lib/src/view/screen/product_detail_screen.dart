@@ -133,15 +133,15 @@ class ProductDetailScreen extends StatelessWidget {
                         children: [
                           Text(
                             product.off != null
-                                ? "\$${product.off}"
-                                : "\$${product.price}",
+                                ? "\Price: ${product.off}"
+                                : "\Price: ${product.price}",
                             style: Theme.of(context).textTheme.displayLarge,
                           ),
                           const SizedBox(width: 3),
                           Visibility(
                             visible: product.off != null ? true : false,
                             child: Text(
-                              "\$${product.price}",
+                              "${product.price}",
                               style: const TextStyle(
                                 decoration: TextDecoration.lineThrough,
                                 color: Colors.grey,

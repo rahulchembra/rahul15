@@ -28,7 +28,7 @@ class _SellState extends State<Sell> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Sell E Waste',
+          'Sell E-Waste',
           style: Theme.of(context).textTheme.displayLarge,
           textAlign: TextAlign.center,
         ),
@@ -42,7 +42,7 @@ class _SellState extends State<Sell> {
             children: [
               const SizedBox(height: 18),
               const Text(
-                'Provide details of ewaste here',
+                'Provide details of E-waste here',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),

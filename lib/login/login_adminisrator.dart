@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:erevive/login/welcomemyapp.dart';
+import 'package:erevive/src/view/screen/administratorlist.dart';
 import 'package:erevive/login/signup_page.dart';
 import 'package:flutter/widgets.dart';
 
@@ -103,9 +103,7 @@ class LoginPageadministrator extends StatelessWidget {
                               // Form is valid, proceed with login action
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyApp(),
-                                ),
+                                MaterialPageRoute(builder: (context) => Road()),
                               );
                             }
                           },
@@ -159,7 +157,7 @@ class LoginPageadministrator extends StatelessWidget {
                 height: MediaQuery.of(context).size.height / 3,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/ewast1.png'),
+                    image: AssetImage('assets/img15.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -206,7 +204,7 @@ class LoginPageadministrator extends StatelessWidget {
           },
         ),
         const SizedBox(
-          height: 30,
+          height: 20,
         ),
       ],
     );

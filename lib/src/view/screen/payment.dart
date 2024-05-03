@@ -44,7 +44,7 @@ class PaymentPage extends StatelessWidget {
                 const SizedBox(height: 25),
                 _buildPaymentOption(
                   icon: Icons.monetization_on,
-                  title: 'Pay using Ecoins',
+                  title: 'Pay using E-coins',
                   onTap: () {
                     // Implement Ecoins payment logic
                   },
