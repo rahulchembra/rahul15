@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Road extends StatelessWidget {
   @override
@@ -7,9 +9,9 @@ class Road extends StatelessWidget {
       appBar: AppBar(
         title: const Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: 50.0), // Adjust padding as needed
+              horizontal: 45.0), // Adjust padding as needed
           child: Text(
-            'Product list',
+            'Product Details',
             style: TextStyle(
               fontSize: 22, // Adjust font size if needed
               fontWeight: FontWeight.bold, // Make the text bold
@@ -17,81 +19,74 @@ class Road extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20.0), // SizedBox below the AppBar
-          Expanded(
-            child: ListView(
-              children: <Widget>[
-                DetailsCard(
-                  image: 'assets/ewaste.png',
-                  text1: 'Product 1',
-                  text2: 'Description 1',
-                ),
-                DetailsCard(
-                  image: 'assets/ewaste.png',
-                  text1: 'Product 2',
-                  text2: 'Description 2',
-                ),
-                DetailsCard(
-                  image: 'assets/img14.png',
-                  text1: 'Product 3',
-                  text2: 'Description 3',
-                ),
-                // Add more DetailsCard widgets for additional items
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+            FirebaseFirestore.instance.collection('submissions').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-class DetailsCard extends StatelessWidget {
-  final String image;
-  final String text1;
-  final String text2;
+          List<DocumentSnapshot> documents = snapshot.data!.docs;
 
-  DetailsCard({required this.image, required this.text1, required this.text2});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(
-          horizontal: 16.0, vertical: 8.0), // Added horizontal padding
-      elevation: 3.0,
-      child: SizedBox(
-        height: 160.0, // Adjust the height of the card here
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                radius: 60.0, // Adjust the size of the circle avatar here
-                backgroundColor: Colors.blue,
-                backgroundImage: AssetImage(image), // Image for circle avatar
-              ),
-            ),
-            SizedBox(
-                width: 15.0), // Added padding between circle avatar and text
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(text1), // Text 1
-                  SizedBox(height: 5.0), // Added gap between text fields
-                  Text(text2), // Text 2
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.arrow_forward),
-            ),
-          ],
-        ),
+          return ListView.builder(
+            itemCount: documents.length,
+            itemBuilder: (context, index) {
+              var submission = documents[index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 120, // Width of the container
+                            height: 130, // Height of the container
+                            constraints: BoxConstraints(
+                                minHeight: 100), // Ensure minimum height
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(10), // Rounded corners
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    submission['image_url']),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                              width: 20), // Add spacing between image and text
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 4), // Add spacing
+                                Text(submission['description']),
+                                SizedBox(height: 4), // Add spacing
+                                Text(submission['address']),
+                                SizedBox(height: 4), // Add spacing
+                                Text(submission['location_link']),
+                                SizedBox(height: 4), // Add spacing
+                                Text(submission['phone_number']),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

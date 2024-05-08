@@ -3,6 +3,9 @@ import 'package:erevive/src/view/screen/coin.dart';
 import 'package:erevive/login/loginpage.dart';
 import 'package:erevive/src/view/screen/coming_soon.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -12,19 +15,12 @@ class ProfilePage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              // Implement back button functionality here
-            },
-          ),
           title: Text(
-            "Profile",
+            'Profile',
             style: Theme.of(context).textTheme.displayLarge,
             textAlign: TextAlign.center,
           ),
           centerTitle: true,
-          // You can customize the AppBar further if needed
         ),
         body: Container(
           color: Colors.white54,
@@ -45,18 +41,42 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Allu Arjun",
-                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 26),
-                  )
-                ],
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text("@tollywood")],
+              FutureBuilder<DocumentSnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .get(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    Map<String, dynamic> data =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              data['name'],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w900, fontSize: 26),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [Text(data['email'])],
+                        ),
+                      ],
+                    );
+                  }
+
+                  return CircularProgressIndicator();
+                },
               ),
               const SizedBox(
                 height: 15,
@@ -70,15 +90,11 @@ class ProfilePage extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 15,
-              ),
               Expanded(
                 child: ListView(
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // Navigate to My Ecoins page
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const Coin()),
@@ -118,7 +134,6 @@ class ProfilePage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigate to Purchase History page
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -159,7 +174,6 @@ class ProfilePage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigate to Help & Support page
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -200,7 +214,6 @@ class ProfilePage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigate to Logout page
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => LoginPage()),
@@ -234,7 +247,7 @@ class ProfilePage extends StatelessWidget {
                     )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

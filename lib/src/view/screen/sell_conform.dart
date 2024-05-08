@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:erevive/src/view/screen/sell_success.dart';
 
-class SubmitPage extends StatelessWidget {
+class SubmitPage extends StatefulWidget {
   final XFile? imageFile;
   final String description;
   final String address;
@@ -19,6 +23,22 @@ class SubmitPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _SubmitPageState createState() => _SubmitPageState();
+}
+
+class _SubmitPageState extends State<SubmitPage> {
+  late FirebaseStorage _storage;
+  late FirebaseFirestore _firestore;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Save references to FirebaseStorage and FirebaseFirestore instances
+    _storage = FirebaseStorage.instance;
+    _firestore = FirebaseFirestore.instance;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +47,7 @@ class SubmitPage extends StatelessWidget {
           style: Theme.of(context).textTheme.displayLarge,
           textAlign: TextAlign.center,
         ),
-        titleSpacing: 60.0, // Adjust the value as needed
+        titleSpacing: 60.0,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -37,9 +57,8 @@ class SubmitPage extends StatelessWidget {
             children: [
               Container(
                 margin: const EdgeInsets.all(10),
-                width:
-                    double.infinity, // Make the width match the parent's width
-                height: 400, // Increase the height as needed
+                width: double.infinity,
+                height: 400,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -60,9 +79,9 @@ class SubmitPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: AspectRatio(
                       aspectRatio: 16 / 9,
-                      child: imageFile != null
+                      child: widget.imageFile != null
                           ? Image.file(
-                              File(imageFile!.path),
+                              File(widget.imageFile!.path),
                               fit: BoxFit.cover,
                             )
                           : const Icon(Icons.image),
@@ -83,28 +102,28 @@ class SubmitPage extends StatelessWidget {
                           'Description',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(description),
+                        subtitle: Text(widget.description),
                       ),
                       ListTile(
                         title: const Text(
                           'Address & PIN Code',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(address),
+                        subtitle: Text(widget.address),
                       ),
                       ListTile(
                         title: const Text(
                           'Google map location link',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(locationLink),
+                        subtitle: Text(widget.locationLink),
                       ),
                       ListTile(
                         title: const Text(
                           'Phone Number',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(phoneNumber),
+                        subtitle: Text(widget.phoneNumber),
                       ),
                     ],
                   ),
@@ -117,17 +136,41 @@ class SubmitPage extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(25.0),
         child: ElevatedButton(
-          onPressed: () {
-            // Perform action on confirmation button press
+          onPressed: () async {
+            try {
+              if (widget.imageFile != null) {
+                var storageRef =
+                    _storage.ref().child('images/${DateTime.now().toString()}');
+                await storageRef.putFile(File(widget.imageFile!.path));
+                var imageUrl = await storageRef.getDownloadURL();
+                var user = FirebaseAuth.instance.currentUser;
+                var uid = user?.uid;
+                await _firestore.collection('submissions').add({
+                  'image_url': imageUrl,
+                  'description': widget.description,
+                  'address': widget.address,
+                  'location_link': widget.locationLink,
+                  'phone_number': widget.phoneNumber,
+                  'user_uid': uid,
+                });
+                // Navigate to another page after successful submission
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SellSucess()),
+                );
+              } else {
+                // Handle case when no image is selected
+              }
+            } catch (e) {
+              print('Firebase Storage Error: $e');
+              // Handle Firebase Storage error accordingly
+            }
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-                Colors.green), // Change button background color
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(40.0), // Change border radius
-                // You can also customize other properties like border color, border width, etc.
+                borderRadius: BorderRadius.circular(40.0),
               ),
             ),
           ),

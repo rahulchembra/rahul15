@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:erevive/login/welcomemyapp.dart';
 import 'package:erevive/login/signup_page.dart';
-import 'package:flutter/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +17,6 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-            color: Colors.black,
-          ),
-        ),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -67,12 +59,16 @@ class LoginPage extends StatelessWidget {
                         children: <Widget>[
                           FadeInUp(
                             duration: const Duration(milliseconds: 1200),
-                            child: makeInput(label: "Username"),
+                            child: makeInput(
+                              label: "Email",
+                              controller: _emailController,
+                            ),
                           ),
                           FadeInUp(
                             duration: const Duration(milliseconds: 1300),
                             child: makeInput(
                               label: "Password",
+                              controller: _passwordController,
                               obscureText: true,
                             ),
                           ),
@@ -90,7 +86,7 @@ class LoginPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(50),
                           border: const Border(
                             bottom: BorderSide(color: Colors.black),
-                            top: const BorderSide(color: Colors.black),
+                            top: BorderSide(color: Colors.black),
                             left: BorderSide(color: Colors.black),
                             right: BorderSide(color: Colors.black),
                           ),
@@ -98,15 +94,53 @@ class LoginPage extends StatelessWidget {
                         child: MaterialButton(
                           minWidth: double.infinity,
                           height: 60,
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              // Form is valid, proceed with login action
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyApp(),
-                                ),
-                              );
+                              try {
+                                await FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                );
+                                // Sign-in successful, navigate to next screen
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const MyApp(),
+                                  ),
+                                );
+                              } catch (e) {
+                                print(e.toString());
+                                // Handle sign-in errors
+                                if (e is FirebaseAuthException) {
+                                  if (e.code == 'user-not-found' ||
+                                      e.code == 'wrong-password') {
+                                    // Inform the user about incorrect credentials
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content:
+                                            Text('Invalid email or password.'),
+                                      ),
+                                    );
+                                  } else {
+                                    // Inform the user about other errors
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(e.message ??
+                                            'Unknown error occurred.'),
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  // Inform the user about other errors
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('An unknown error occurred.'),
+                                    ),
+                                  );
+                                }
+                              }
                             }
                           },
                           color: Colors.greenAccent,
@@ -128,7 +162,6 @@ class LoginPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        // ignore: prefer_const_constructors
                         Text("Don't have an account?"),
                         GestureDetector(
                           onTap: () {
@@ -171,7 +204,8 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget makeInput({label, obscureText = false}) {
+  Widget makeInput(
+      {label, obscureText = false, TextEditingController? controller}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -183,26 +217,22 @@ class LoginPage extends StatelessWidget {
         const SizedBox(
           height: 5,
         ),
-        FormField(
-          builder: (FormFieldState<String> state) {
-            return TextFormField(
-              obscureText: obscureText,
-              decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey.shade400)),
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey.shade400)),
-                errorText: state.hasError ? state.errorText : null,
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'This field is mandatory';
-                }
-                return null;
-              },
-            );
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400)),
+            border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400)),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'This field is mandatory';
+            }
+            return null;
           },
         ),
         const SizedBox(

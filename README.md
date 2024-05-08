@@ -1,6 +1,6 @@
 # erevive
 
-A new Flutter project.
+A new Flutter project.erevive app
 
 ## Getting Started
 
