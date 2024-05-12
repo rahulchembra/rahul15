@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erevive/src/view/screen/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SellSucess extends StatelessWidget {
   @override
@@ -44,7 +46,7 @@ class SellSucess extends StatelessWidget {
                       ),
                       const SizedBox(height: 20.0),
                       const Text(
-                        'Your sell E-waste has successfull!',
+                        'Your sell E-waste has been successful!',
                         style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
@@ -53,16 +55,25 @@ class SellSucess extends StatelessWidget {
                       ),
                       const SizedBox(height: 20.0),
                       ElevatedButton(
-                        onPressed: () {
-                          // Pop the current screen
-                          Navigator.pop(context);
-
-                          // Navigate to the ProductListScreen after popping
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
-                          );
+                        onPressed: () async {
+                          String? currentUserUID =
+                              FirebaseAuth.instance.currentUser?.uid;
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(currentUserUID)
+                                .update({'Ecoin': FieldValue.increment(20)});
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                            );
+                          } catch (e) {
+                            print("Error updating ecoin count: $e");
+                            // Handle error
+                          }
                         },
                         style: ButtonStyle(
                           backgroundColor:

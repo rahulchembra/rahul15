@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erevive/src/view/screen/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderSucess extends StatelessWidget {
   @override
@@ -53,16 +55,25 @@ class OrderSucess extends StatelessWidget {
                       ),
                       const SizedBox(height: 20.0),
                       ElevatedButton(
-                        onPressed: () {
-                          // Pop the current screen
-                          Navigator.pop(context);
-
-                          // Navigate to the ProductListScreen after popping
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
-                          );
+                        onPressed: () async {
+                          String? currentUserUID =
+                              FirebaseAuth.instance.currentUser?.uid;
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(currentUserUID)
+                                .update({'Ecoin': FieldValue.increment(20)});
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                            );
+                          } catch (e) {
+                            print("Error updating ecoin count: $e");
+                            // Handle error
+                          }
                         },
                         style: ButtonStyle(
                           backgroundColor:

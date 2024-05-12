@@ -3,13 +3,12 @@ import 'package:erevive/login/loginpage.dart';
 import 'package:erevive/login/welcomemyapp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneNumberController =
-      TextEditingController(); // Added phone number controller
+  final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -83,8 +82,7 @@ class SignupPage extends StatelessWidget {
                       duration: const Duration(milliseconds: 1300),
                       child: makeInput(
                         label: "Phone Number",
-                        controller:
-                            _phoneNumberController, // Added phone number controller
+                        controller: _phoneNumberController,
                         keyboardType: TextInputType.phone,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -143,25 +141,22 @@ class SignupPage extends StatelessWidget {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           try {
-                            // Create user with FirebaseAuth
                             final userCredential = await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                               email: _emailController.text,
                               password: _passwordController.text,
                             );
 
-                            // Store user data in Firestore
                             await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .set({
                               'name': _nameController.text,
                               'email': _emailController.text,
-                              'phoneNumber': _phoneNumberController
-                                  .text, // Store phone number
+                              'phoneNumber': _phoneNumberController.text,
+                              'Ecoin': 0, // Initialize Ecoin count to 0
                             });
 
-                            // Sign-up successful, navigate to next screen
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -171,8 +166,6 @@ class SignupPage extends StatelessWidget {
                           } catch (e) {
                             if (e is FirebaseAuthException &&
                                 e.code == 'email-already-in-use') {
-                              // Handle case where email is already in use
-                              // Prompt the user to choose a different email or log in
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -181,7 +174,6 @@ class SignupPage extends StatelessWidget {
                                 ),
                               );
                             } else {
-                              // Handle other errors
                               print(e.toString());
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -215,7 +207,6 @@ class SignupPage extends StatelessWidget {
                       const Text("Already have an account?"),
                       GestureDetector(
                         onTap: () {
-                          // Navigate to login page
                           Navigator.push(
                             context,
                             MaterialPageRoute(
